@@ -5,14 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Lab#6</title>
 
+        <!-- Inclusión de las bibliotecas de React y Babel desde CDN -->
         <script src="https://unpkg.com/react@18/umd/react.development.js" ></script>
         <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" ></script>
         <script src="https://unpkg.com/@babel/standalone/babel.min.js" ></script>
     </head>
 
     <style>
-        /* Inline CSS for demonstration */
-
         @font-face {
             font-family: 'Gulfs Display';
             src: url('./fonts/GulfsDisplay-Normal.ttf') format('truetype');
@@ -32,7 +31,7 @@
             height: 100vh;
         }
 
-        /* 1ra pagina */
+        /* 1ra Pantalla */
         .container {
             height: 100vh;
             display: flex;
@@ -52,7 +51,7 @@
 
         h1 {
             font-size: 5rem;
-            color: pink;
+            color: #fea9e0;
             margin: 1rem 0;
             text-shadow: 5px 5px black;
         }
@@ -74,7 +73,7 @@
             background-color: #ffdd66;
         }
 
-        /* 2da pagina */
+        /* 2da Pantalla */
         .card {
             width: 120px;
             height: 160px;
@@ -153,6 +152,79 @@
             position: fixed;
             display: inline-block;
         }
+
+        /* 3ra Pantalla */
+        .grid_container {
+            margin: 0;
+            padding: 20rem;
+            background-color: transparent;
+            background-image: linear-gradient(to right, #ddd 1px, transparent 1px),
+                                linear-gradient(to bottom, #ddd 1px, transparent 1px);
+            background-size: 50px 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Gulfs Display', 'Comic Sans MS', sans-serif;
+        }
+        
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 800px;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tarjeta {
+            width: 60px;
+            height: 90px;
+            border-radius: 10px;
+            font-size: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid black;
+            transform: rotate(calc(-5deg + 10deg * var(--random)));
+            text-shadow:
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px  1px 0 #000,
+                1px  1px 0 #000;
+            animation: upDown 1s ease-in-out infinite;
+        }
+
+        .tarjeta.blue {
+            background-color: #9fb4ff;
+            color: white;
+        }
+
+        .tarjeta.pink {
+            background-color: #fea9e0;
+            color: white;
+        }
+
+        .tarjeta.yellow {
+            background-color: #fff08e;
+            color: white;
+        }
+
+        @keyframes upDown {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        }
+
+        .animate-updown {
+            animation: upDown 2.5s ease-in-out infinite;
+        }
         
     </style>
 
@@ -161,10 +233,10 @@
         <script type="text/babel">
 
             function Card({ image }) {
-                const [flipped, setFlipped] = React.useState(false);
+                const [flipped, setFlipped] = React.useState(false); // Estado para saber si la carta está volteada
 
                 const handleClick = () => {
-                    setFlipped(true);
+                    setFlipped(true); // Al hacer clic, se voltea
                     setContador(prev => prev + 1); // aumenta contador al hacer clic a cada carta
                 };
 
@@ -175,6 +247,42 @@
                             <div className="card-back">
                                 <img src={image} alt="imagen" />
                             </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            function PantallaFinal(){
+                const [animated, setAnimated] = React.useState(false); // Controla el inicio de animación
+
+                React.useEffect(() => {
+                    setAnimated(true);
+                }, []);
+
+                return (
+                    <div className="grid_container">
+                        <div className="grid">
+                        <div className="tarjeta blue">¡</div>
+                        <div className="tarjeta blue">G</div>
+                        <div className="tarjeta yellow">R</div>
+                        <div className="tarjeta blue">A</div>
+                        <div className="tarjeta blue">C</div>
+                        <div className="tarjeta pink">I</div>
+                        <div className="tarjeta blue">A</div>
+                        <div className="tarjeta yellow">S</div>
+                            <p></p>
+                            <p></p>
+                        <div className="tarjeta pink">P</div>
+                        <div className="tarjeta yellow">O</div>
+                        <div className="tarjeta blue">R</div>
+                        <p></p>
+                        <p></p>
+                        <div className="tarjeta blue">J</div>
+                        <div className="tarjeta yellow">U</div>
+                        <div className="tarjeta blue">G</div>
+                        <div className="tarjeta blue">A</div>
+                        <div className="tarjeta pink">R</div>
+                        <div className="tarjeta yellow">!</div>
                         </div>
                     </div>
                 );
@@ -194,10 +302,12 @@
                     return duplicated.sort(() => 0.5 - Math.random());
                 }, []);
 
+                //Muestra cartas
                 const handleStart = () => {
                     setShowCards(true);
                 };
 
+                //Al hacer clic en cartas, estas se voltean y se chequea si dos cartas son iguales
                 const handleCardClick = (index) => {
                     if (isChecking || flippedCards.includes(index) || matchedCards.includes(index)) return;
 
@@ -218,14 +328,15 @@
                         }, 1000);
                     }
                 };
-
+                
+                //Muestra cartas (ambas caras)
                 const renderCards = () => {
                     return (
                     <>
                         <div className="contador">Contador: {contador}</div>
                         <div className="card-grid">
                             {imagePaths.map((img, i) => {
-                                const isFlipped = flippedCards.includes(i) || matchedCards.includes(i);
+                                const isFlipped = flippedCards.includes(i) || matchedCards.includes(i); 
                                 return (
                                     <div>
                                         <button key={i} className="card" onClick={() => handleCardClick(i)}>
@@ -235,9 +346,6 @@
                                                 "?"
                                             )}
                                         </button>
-
-                                        
-
                                     </div>
                                 );
                             })}
@@ -246,6 +354,12 @@
                     );
                 };
 
+                //Si se completa el juego, muestra pantalla final
+                if (matchedCards.length === imagePaths.length) {
+                    return <PantallaFinal />;
+                }
+
+                //Muestra primera pantalla
                 return (
                     <div style={{ position: 'relative' }}>
                         {!showCards ? (
@@ -256,11 +370,13 @@
                             </div>
                         ) : (
                             renderCards()
-                        )}
+                        )
+                        }
                     </div>
                 );
             }
 
+        //Render App
         const root = ReactDOM.createRoot(document.getElementById("root"));
         root.render(<App />);
 
