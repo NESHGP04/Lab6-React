@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lab#6</title>
+
+        <script src="https://unpkg.com/react@18/umd/react.development.js" ></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" ></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js" ></script>
+    </head>
+
+    <style>
+        /* Inline CSS for demonstration */
+
+        @font-face {
+            font-family: 'Gulfs Display';
+            src: url('./fonts/GulfsDisplay-Normal.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #a7e8ce;
+            font-family: 'Gulfs Display', 'Comic Sans MS', sans-serif;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* 1ra pagina */
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bubble {
+            background: white;
+            border-radius: 100px;
+            padding: 4rem 6rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 5rem;
+            color: pink;
+            margin: 1rem 0;
+            text-shadow: 5px 5px black;
+        }
+
+        .button-start {
+            margin-top: 3rem;
+            background-color: #ffe999;
+            border: 1px black;
+            padding: 0.75rem 2rem;
+            border-radius: 999px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+
+        .button-start:hover {
+            background-color: #ffdd66;
+        }
+
+        /* 2da pagina */
+        .card {
+            width: 120px;
+            height: 160px;
+            perspective: 1000px;
+            background-color: #9fb4ff;
+            font-family: 'Gulfs Display';
+
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            font-family: 'Gulfs Display';
+        }
+
+        .card-front {
+            background-color: #9fb4ff;
+            cursor: pointer;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-back img {
+            width: 100%;
+            height: auto;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+
+        /* Contador */
+        .contador {
+            margin-top: 25rem;
+            margin-left: 12rem;
+            background-color: #ffe999;
+            padding: 0.75rem 2rem;
+            border-radius: 999px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            text-align: center;
+            position: fixed;
+            display: inline-block;
+        }
+        
+    </style>
+
+    <body>
+        <div id="root"></div>
+        <script type="text/babel">
+
+            function Card({ image }) {
+                const [flipped, setFlipped] = React.useState(false);
+
+                const handleClick = () => {
+                    setFlipped(true);
+                    setContador(prev => prev + 1); // aumenta contador al hacer clic a cada carta
+                };
+
+                return (
+                    <div className={`card ${flipped ? 'flipped' : ''}`} onClick={handleClick}>
+                        <div className="card-inner">
+                            <div className="card-front">?</div>
+                            <div className="card-back">
+                                <img src={image} alt="imagen" />
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            function App() {
+                const [showCards, setShowCards] = React.useState(false);
+                const [flippedCards, setFlippedCards] = React.useState([]); 
+                const [matchedCards, setMatchedCards] = React.useState([]); // índices de cartas encontradas
+                const [isChecking, setIsChecking] = React.useState(false); // para evitar clics durante el chequeo
+                const [contador, setContador] = React.useState(0);
+
+                // Rutas a las imágenes
+                const imagePaths = React.useMemo(() => {
+                    const base = ['cactus.png', 'cherry.png', 'flower.png', 'ice_cream.png'];
+                    const duplicated = [...base, ...base];
+                    return duplicated.sort(() => 0.5 - Math.random());
+                }, []);
+
+                const handleStart = () => {
+                    setShowCards(true);
+                };
+
+                const handleCardClick = (index) => {
+                    if (isChecking || flippedCards.includes(index) || matchedCards.includes(index)) return;
+
+                    setContador(prev => prev + 1);
+
+                    const newFlipped = [...flippedCards, index];
+                    setFlippedCards(newFlipped);
+
+                    if (newFlipped.length === 2) {
+                        setIsChecking(true);
+                        setTimeout(() => {
+                            const [first, second] = newFlipped;
+                            if (imagePaths[first] === imagePaths[second]) {
+                                setMatchedCards([...matchedCards, first, second]);
+                            }
+                            setFlippedCards([]);
+                            setIsChecking(false);
+                        }, 1000);
+                    }
+                };
+
+                const renderCards = () => {
+                    return (
+                    <>
+                        <div className="contador">Contador: {contador}</div>
+                        <div className="card-grid">
+                            {imagePaths.map((img, i) => {
+                                const isFlipped = flippedCards.includes(i) || matchedCards.includes(i);
+                                return (
+                                    <div>
+                                        <button key={i} className="card" onClick={() => handleCardClick(i)}>
+                                            {isFlipped ? (
+                                                <img src={`./assets/${img}`} alt="card" style={{ width: '190px', height: '130px' }} />                            
+                                            ) : (
+                                                "?"
+                                            )}
+                                        </button>
+
+                                        
+
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </>
+                    );
+                };
+
+                return (
+                    <div style={{ position: 'relative' }}>
+                        {!showCards ? (
+                            <div className="bubble">
+                                <h1>Juguemos</h1>
+                                <h1>Memoria</h1>
+                                <button className="button-start" onClick={handleStart}>¡VAMOS!</button>
+                            </div>
+                        ) : (
+                            renderCards()
+                        )}
+                    </div>
+                );
+            }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+
+    </script>
+</body>
+</html>
