@@ -28,7 +28,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            /* height: 100vh; */
+
+            min-height: 100vh;
+            flex-direction: column;
         }
 
         /* 1ra Pantalla */
@@ -37,16 +40,26 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
+            padding: 2rem;
+            text-align: center;
+            width: 100%;
+            max-width: 1000px;
+            box-sizing: border-box;
         }
 
         .bubble {
             background: white;
-            border-radius: 100px;
-            padding: 4rem 6rem;
+            /* border-radius: 100px; */
+            /* padding: 4rem 6rem; */
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: center;
             position: relative;
             display: inline-block;
+
+            padding: 2rem;
+            border-radius: 2rem;
+            max-width: 90vw;
         }
 
         h1 {
@@ -133,15 +146,16 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            padding-top: 2rem;
+            width: 100%;
+            margin-top: 6rem;
+            max-width: 600px;
+            padding: 0.5rem;
+            box-sizing: border-box;
         }
 
         /* Contador */
         .contador {
-            margin-top: 25rem;
-            margin-left: 12rem;
+            margin-left: 0rem;
             background-color: #ffe999;
             padding: 0.75rem 2rem;
             border-radius: 999px;
@@ -150,22 +164,30 @@
             box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
             text-align: center;
             position: fixed;
+            z-index: 9999;
             display: inline-block;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         /* 3ra Pantalla */
         .grid_container {
             margin: 0;
-            padding: 20rem;
+            padding: 2rem;
             background-color: transparent;
             background-image: linear-gradient(to right, #ddd 1px, transparent 1px),
                                 linear-gradient(to bottom, #ddd 1px, transparent 1px);
             background-size: 50px 50px;
+            flex-direction: column;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Gulfs Display', 'Comic Sans MS', sans-serif;
+            padding-top: 5rem;
+            position: relative;
+            z-index: 1;
         }
         
         .grid {
@@ -173,7 +195,13 @@
             flex-wrap: wrap;
             max-width: 800px;
             justify-content: center;
-            gap: 10px;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .grupo {
+            display: flex;
+            gap: 0.5rem;
         }
 
         .tarjeta {
@@ -225,6 +253,29 @@
         .animate-updown {
             animation: upDown 2.5s ease-in-out infinite;
         }
+
+        /* Media Queries para pantallas pequeñas */
+        @media (max-width: 600px) {
+            .bubble {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                width: 80px;
+                height: 110px;
+                font-size: 3rem;
+            }
+
+            .tarjeta {
+                width: 50px;
+                height: 70px;
+                font-size: 1.5rem;
+            }
+        }
         
     </style>
 
@@ -252,8 +303,8 @@
                 );
             }
 
-            function PantallaFinal(){
-                const [animated, setAnimated] = React.useState(false); // Controla el inicio de animación
+            function PantallaFinal() {
+                const [animated, setAnimated] = React.useState(false);
 
                 React.useEffect(() => {
                     setAnimated(true);
@@ -262,31 +313,36 @@
                 return (
                     <div className="grid_container">
                         <div className="grid">
-                        <div className="tarjeta blue">¡</div>
-                        <div className="tarjeta blue">G</div>
-                        <div className="tarjeta yellow">R</div>
-                        <div className="tarjeta blue">A</div>
-                        <div className="tarjeta blue">C</div>
-                        <div className="tarjeta pink">I</div>
-                        <div className="tarjeta blue">A</div>
-                        <div className="tarjeta yellow">S</div>
-                            <p></p>
-                            <p></p>
-                        <div className="tarjeta pink">P</div>
-                        <div className="tarjeta yellow">O</div>
-                        <div className="tarjeta blue">R</div>
-                        <p></p>
-                        <p></p>
-                        <div className="tarjeta blue">J</div>
-                        <div className="tarjeta yellow">U</div>
-                        <div className="tarjeta blue">G</div>
-                        <div className="tarjeta blue">A</div>
-                        <div className="tarjeta pink">R</div>
-                        <div className="tarjeta yellow">!</div>
+                            <div className="grupo">
+                                <div className="tarjeta blue">¡</div>
+                                <div className="tarjeta blue">G</div>
+                                <div className="tarjeta yellow">R</div>
+                                <div className="tarjeta blue">A</div>
+                                <div className="tarjeta blue">C</div>
+                                <div className="tarjeta pink">I</div>
+                                <div className="tarjeta blue">A</div>
+                                <div className="tarjeta yellow">S</div>
+                            </div>
+
+                            <div className="grupo">
+                                <div className="tarjeta pink">P</div>
+                                <div className="tarjeta yellow">O</div>
+                                <div className="tarjeta blue">R</div>
+                            </div>
+
+                            <div className="grupo">
+                                <div className="tarjeta blue">J</div>
+                                <div className="tarjeta yellow">U</div>
+                                <div className="tarjeta blue">G</div>
+                                <div className="tarjeta blue">A</div>
+                                <div className="tarjeta pink">R</div>
+                                <div className="tarjeta yellow">!</div>
+                            </div>
                         </div>
                     </div>
                 );
             }
+
 
             function App() {
                 const [showCards, setShowCards] = React.useState(false);
@@ -297,7 +353,7 @@
 
                 // Rutas a las imágenes
                 const imagePaths = React.useMemo(() => {
-                    const base = ['cactus.png', 'cherry.png', 'flower.png', 'ice_cream.png'];
+                    const base = ['cactus.png', 'cherry.png', 'flower.png', 'ice_cream.png', 'heart.png', 'leaf.png', 'peach.png', 'planet.png' ];
                     const duplicated = [...base, ...base];
                     return duplicated.sort(() => 0.5 - Math.random());
                 }, []);
